@@ -5,8 +5,14 @@ from Config import EXCEL_FILE_NAME
 from Config import SHEET
 import datetime
 import math
+import enum
 
 HOUR_OFFSET = 12
+
+class States(enum.Enum):
+    Menu = 1
+    InOT = 2
+    Break = 3
 
 class cell:
     def __init__(self, column_tag, row_tag):
@@ -57,6 +63,7 @@ class WorkbookWrapper:
 
 class TrackerMenu:
     def __init__(self):
+        self.state = States.Menu
         self.employee_name = EMPLOYEE_NAME 
         self.workbook = WorkbookWrapper(EXCEL_FILE_NAME, SHEET)
 
@@ -82,6 +89,16 @@ class TrackerMenu:
         self.workbook.start_ot_clock = HourFormat12(hour_in_12hr_format, minute)
         print ("Starting OT at " + self.workbook.start_ot_clock.toString())
     
+
+    def __finish_ot(self):
+        finish_minute_time = datetime.datetime.now().minute
+        hour_in_12hr_format = datetime.datetime.now().hour
+        self.workbook.finish_ot_clock = HourFormat12(hour_in_12hr_format, finish_minute_time)
+        print ("Finished OT at " + self.workbook.finish_ot_clock.toString())
+    
+    def take_break(self):
+        self.state = States.Break
+
     def process_choice(self, choice):
         if int(choice) is 1:
             self.__start_ot()
@@ -90,13 +107,9 @@ class TrackerMenu:
         elif int(choice) is 3:
             self.__review_ot()
         elif int(choice) is 4:
+            self.take_break()
+        elif int(choice) is 5:
             exit()
-
-    def __finish_ot(self):
-        finish_minute_time = datetime.datetime.now().minute
-        hour_in_12hr_format = datetime.datetime.now().hour
-        self.workbook.finish_ot_clock = HourFormat12(hour_in_12hr_format, finish_minute_time)
-        print ("Finished OT at " + self.workbook.finish_ot_clock.toString())
 
     def change_line_manager(self):
         manager_cell = cell()
