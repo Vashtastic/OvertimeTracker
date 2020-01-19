@@ -1,3 +1,7 @@
 EMPLOYEE_NAME = "Isaac Emmanuel Medina"
 EXCEL_FILE_NAME = "ApprovedOvertime.xlsx"
 SHEET = "Approved Overtime"
+MANAGER_TAG_CELL = "A6"
+MONTH_TAG_CELL = "A7"
+ID_NO_TAG_CELL = "C6"
+DATE_FILING_CELL = "E6"

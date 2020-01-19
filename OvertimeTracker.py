@@ -27,8 +27,9 @@ class HourFormat12:
         self.meridian = "AM" if hour < 11 else "PM"
 
     def toString(self):
+        minutes_string =  self.minute if len(str(self.minute)) is not 1 else str(0) + str(self.minute)  
         return "{hour}:{minutes} {meridian}".format(hour=self.hour,
-                                                  minutes=self.minute,
+                                                  minutes=minutes_string,
                                                   meridian=self.meridian)
 
 class WorkbookWrapper:
@@ -54,7 +55,6 @@ class WorkbookWrapper:
     def create_copy_from_template():
         print("To be implemented")
 
-
 class TrackerMenu:
     def __init__(self):
         self.employee_name = EMPLOYEE_NAME 
@@ -62,19 +62,14 @@ class TrackerMenu:
 
     def print_menu(self):
         print("Hi " + EMPLOYEE_NAME + " What do you want to do today?")
-        print(str("-" * 20))
+        self.__print_headers()
         print("1. Start OT")
         print("2. End OT")
         print("3. Review Ot")
-        print(str("-" * 20))
-        choice = input("Enter your choice here: ")
-        if int(choice) is 1:
-            self.__start_ot()
-        elif int(choice) is 2:
-            self.__finish_ot()
-        elif int(choice) is 3:
-            self.__review_ot()
-
+        print("4. Take a break")
+        print("5. Exit")
+        self.__print_headers()
+        
     @classmethod
     def get_current_date(self):
         current_date = datetime.datetime.now()
@@ -86,6 +81,16 @@ class TrackerMenu:
         minute = current_date.minute
         self.workbook.start_ot_clock = HourFormat12(hour_in_12hr_format, minute)
         print ("Starting OT at " + self.workbook.start_ot_clock.toString())
+    
+    def process_choice(self, choice):
+        if int(choice) is 1:
+            self.__start_ot()
+        elif int(choice) is 2:
+            self.__finish_ot()
+        elif int(choice) is 3:
+            self.__review_ot()
+        elif int(choice) is 4:
+            exit()
 
     def __finish_ot(self):
         finish_minute_time = datetime.datetime.now().minute
@@ -102,6 +107,15 @@ class TrackerMenu:
     
     def __review_ot(self):
         print("To be implemented")
+    
+    def __print_headers(self):
+        print(str("-" * 20))
 
 menu = TrackerMenu()
 menu.print_menu()
+
+while(True):
+    menu.print_menu()
+    choice = input("Please enter choice here: ")
+    menu.process_choice(choice)
+    input("\n\n\nPress Any Key To Continue")
