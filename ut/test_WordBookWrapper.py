@@ -1,15 +1,15 @@
 import pytest
 from openpyxl import Workbook
 from openpyxl import load_workbook
-from Config import EMPLOYEE_NAME
-from Config import EXCEL_FILE_NAME
-from Config import SHEET
+from ..Config import EXCEL_FILE_NAME 
+from ..Config import SHEET
+# from OvertimeTracker import WorkbookWrapper
+# from OvertimeTracker import cell
 import datetime
 import math
 import enum
 
-def test_awef():
-    x = 1
-    y = 2
-    expected_sum = x + y
-    assert 3 is expected_sum
+def test_EntryIntoCell():
+    workbook_wrapper = WorkBookWrapper(EXCEL_FILE_NAME, SHEET)
+    cell_ = cell(MANAGER_TAG_CELL) #TODO Change name of this class
+    assert 1 is 1

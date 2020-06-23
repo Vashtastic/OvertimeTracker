@@ -27,8 +27,8 @@ class cell:
         return str(column_tag) + str(row_tag)
 
 class HourFormat12:
-    def __init__(self, hour, minute, meridian = "AM"):
-        self.hour = hour - HOUR_OFFSET
+    def __init__(self, hour, minute):
+        self.hour = hour - HOUR_OFFSET if hour > 12 else hour
         self.minute = minute
         self.meridian = "AM" if hour < 11 else "PM"
 
@@ -47,8 +47,8 @@ class WorkbookWrapper:
         self.start_ot_clock = "nan"
         self.finish_ot_clock = "nan"
 
-    def print_cell(self, cell):
-        print(self.sheet_ranges[cell].value)
+    def get_cell_value(self, cell):
+        return self.sheet_ranges[cell].value
     
     def write_to_cell(self, cell, value):
         self.sheet_ranges[cell] = value
@@ -86,15 +86,20 @@ class TrackerMenu:
         current_date = datetime.datetime.now()
         hour_in_12hr_format = current_date.hour
         minute = current_date.minute
-        self.workbook.start_ot_clock = HourFormat12(hour_in_12hr_format, minute)
-        print ("Starting OT at " + self.workbook.start_ot_clock.toString())
     
+        if self.state is not States.InOT:
+            self.workbook.start_ot_clock = HourFormat12(hour_in_12hr_format, minute)
+            print("Starting OT at " + self.workbook.start_ot_clock.toString())
+            self.state = States.InOT
+        else:
+            print("OT is still on!")
 
     def __finish_ot(self):
         finish_minute_time = datetime.datetime.now().minute
         hour_in_12hr_format = datetime.datetime.now().hour
         self.workbook.finish_ot_clock = HourFormat12(hour_in_12hr_format, finish_minute_time)
         print ("Finished OT at " + self.workbook.finish_ot_clock.toString())
+        self.state = States.Menu
     
     def take_break(self):
         self.state = States.Break
@@ -125,7 +130,6 @@ class TrackerMenu:
         print(str("-" * 20))
 
 menu = TrackerMenu()
-menu.print_menu()
 
 while(True):
     menu.print_menu()
